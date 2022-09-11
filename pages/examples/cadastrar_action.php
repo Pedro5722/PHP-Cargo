@@ -8,14 +8,14 @@
     
     if($nome && $tipo){
 
-      $sql = $pdo->prepare("SELECT * FROM cargo WHERE NOME_CARGO = :nome AND TIPO_CARGO = :tipo");
+      $sql = $pdo->prepare("SELECT * FROM cargo WHERE NOME_CARGO = :nome AND FK_TIPO_CARGO = :tipo");
       $sql->bindValue(":nome", $nome);
       $sql->bindValue(":tipo", $tipo);
       $sql->execute();
   
       if($sql->rowCount() === 0){
         
-        $sql = $pdo->prepare("INSERT INTO cargo (NOME_CARGO, TIPO_CARGO ) VALUES (:nome, :tipo)");
+        $sql = $pdo->prepare("INSERT INTO cargo (NOME_CARGO, FK_TIPO_CARGO ) VALUES (:nome, :tipo)");
         $sql->bindValue(":nome", $nome);
         $sql->bindValue(":tipo", $tipo);
         $sql->execute();

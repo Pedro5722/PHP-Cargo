@@ -1,9 +1,17 @@
 <?php
   require 'config.php';
   $lista =[];
-  $sql = $pdo->query("SELECT * FROM cargo");
+  $tlista = [];
+  $sql = $pdo->query("SELECT * FROM cargo c
+                      inner join tipo_cargo tc on
+                      c.FK_TIPO_CARGO = tc.ID_TIPO_CARGO
+                      order by NOME_CARGO ");
   if($sql->rowCount() > 0){
     $lista = $sql->fetchAll(PDO::FETCH_ASSOC);
+  };
+  $sql = $pdo->query('SELECT * FROM Tipo_CARGO');
+  if($sql->rowCount() > 0){
+    $tlista = $sql->fetchAll(PDO::FETCH_ASSOC);
   };
 ?>
 
@@ -880,12 +888,15 @@
                   <tr>
                     <td class="col-1"><?=$cargo['ID_CARGO']?></td>
                     <td class="col-1"><?=$cargo['NOME_CARGO']?></td>
-                    <td class="col-1"><?=$cargo['TIPO_CARGO']?></td>
+                    <td class="col-1"><?=$cargo['TIPO']?></td>
                     <td>
                       <a class="btn btn-warning" href="#" data-toggle="modal" data-target="#EDITAR<?=$cargo['ID_CARGO']?>">  <i class="fa fa-edit fa-lg"></i></a>
                       <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#DELETAR<?=$cargo['ID_CARGO']?>">  <i class="fa fa-trash fa-lg"></i></a>
                     </td>
-                  </tr>
+                  </tr>                  
+                <?php endforeach; ?>
+
+                
                   <!-- Modal INSERT -->
                   <div class="modal fade" id="staticBackdrop-INSERT" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -901,8 +912,13 @@
                               <label for="nome">
                                 NOME DO CARGO <input type="text" class="nome col-9" name="nome">
                               </label>
+
                               <label for="tipo">
-                                TIPO DO CARGO <input type="text" class="tipo col-9" name="tipo">
+                                <select name="tipo" id="tipo">
+                                  <?php foreach($tlista as $tcargo){?>
+                                  <option value="<?=$tcargo['ID_TIPO_CARGO']?>"><?=$tcargo['TIPO']?></option>
+                                  <?php }?>
+                                </select>
                               </label>
                             </div>
                               <div class="modal-footer">
@@ -913,6 +929,7 @@
                       </div>
                     </div>
                   </div>
+                  <?php foreach($lista as $cargo):?>
 
                   <!-- Modal UPDATE -->
                   <div class="modal fade" id="EDITAR<?=$cargo['ID_CARGO']?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -931,7 +948,11 @@
                                 NOME DO CARGO <input type="text" class="nome col-9" name="nome" value="<?=$cargo['NOME_CARGO']?>">
                               </label>
                               <label for="tipo">
-                                TIPO DO CARGO <input type="text" class="tipo col-9" name="tipo" value="<?=$cargo['TIPO_CARGO']?>" >
+                                <select name="tipo" id="tipo">
+                                  <?php foreach($tlista as $tcargo){?>
+                                  <option value="<?=$tcargo['ID_TIPO_CARGO']?>"><?=$tcargo['TIPO']?></option>
+                                  <?php }?>
+                                </select>
                               </label>
                             </div>
                               <div class="modal-footer">
